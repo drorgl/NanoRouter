@@ -1,0 +1,6 @@
+#ifndef TEST_NANOROUTER_HEADER_RULE_PARSER_H
+#define TEST_NANOROUTER_HEADER_RULE_PARSER_H
+
+void test_header_rule_parser(void);
+
+#endif // TEST_NANOROUTER_HEADER_RULE_PARSER_H
