@@ -63,25 +63,6 @@ void nr_process_redirect_rule(
 // --- Function Signatures for Parsing into Struct ---
 
 /**
- * @brief Callback function used by nr_process_redirect_rule to populate a redirect_rule_t struct.
- *
- * This function is intended to be used as the callback for nr_process_redirect_rule.
- * It parses individual parts of a redirect rule and stores them into the provided
- * redirect_rule_t structure.
- *
- * @param token The string token representing a part of the rule.
- * @param token_len The length of the token.
- * @param part_type The type of the redirect rule part (e.g., from_route, to_route, status).
- * @param user_data A pointer to the redirect_rule_t struct to be populated.
- */
-static void nr_redirect_rule_parser_callback(
-    const char *token,
-    size_t token_len,
-    nr_redirect_part_type_t part_type,
-    void *user_data
-);
-
-/**
  * @brief Parses a single redirect rule line into a redirect_rule_t structure.
  *
  * This function takes a raw rule line string, processes it using nr_process_redirect_rule,

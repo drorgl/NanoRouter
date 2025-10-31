@@ -152,7 +152,7 @@ bool nr_match_query_params(const char *url_query, const nr_key_value_item_t *rul
     strncpy(url_query_copy, url_query, NR_MAX_ROUTE_LEN);
     url_query_copy[NR_MAX_ROUTE_LEN] = '\0';
 
-    char *rest_of_url_query = url_query_copy;
+    // char *rest_of_url_query = url_query_copy;
 
     for (uint8_t i = 0; i < num_rule_query_params; ++i) {
         const nr_key_value_item_t *rule_param = &rule_query_params[i];

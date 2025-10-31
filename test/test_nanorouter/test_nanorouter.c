@@ -6,6 +6,7 @@
 #include "test_nanorouter_redirect_middleware.h" // Include the new redirect middleware test header
 #include "test_nanorouter_header_rule_parser.h" // Include the new header rule parser test header
 #include "test_nanorouter_headers_middleware.h" // Include the new headers middleware test header
+#include "test_nanorouter_condition_matching.h"
 #include <string.h> // For strncpy
 #include <stdlib.h> // For free
 #include <stdbool.h> // For bool type
