@@ -1,0 +1,31 @@
+# Permanent
+
+/sponsors/ /2024/merci/ 302
+/merci/ /2024/merci/ 302
+/en/sponsors/ /en/2024/thanks/ 302
+/en/thanks/ /en/2024/thanks/ 302
+/slack https://join.slack.com/t/welovespeed/shared_invite/zt-5l09qo37-lNRBmfud5YTQL8EytnMyrw 302
+
+# Temporary
+
+/en/blog/ /blog 302
+/en/legal-mentions/ /mentions-legales/ 302
+
+# Redirect to 2024
+
+/en/ /en/2024 302
+/ /2024 302
+
+/code-de-conduite/ /2024/code-de-conduite/ 302
+/code-of-conduct/ /en/2024/code-of-conduct/ 302
+
+/protocole-sanitaire/ /2023/protocole-sanitaire/ 302
+/health-protocol/ /en/2023/health-protocol/ 302
+
+/2023/infos-pratiques/ /2024/infos-pratiques/ 302
+/en/2023/informations/ /en/2024/informations/ 302
+
+# cfp
+
+/2024/cfp https://docs.google.com/forms/d/e/1FAIpQLSe8IbSntIV0OACKvj5lBIpCmg8E7xGs3vVt9g10Cx1BZe01Rw/viewform
+/en/2024/cfp https://docs.google.com/forms/d/e/1FAIpQLSe8IbSntIV0OACKvj5lBIpCmg8E7xGs3vVt9g10Cx1BZe01Rw/viewform

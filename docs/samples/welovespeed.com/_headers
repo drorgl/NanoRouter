@@ -1,0 +1,32 @@
+/*
+  Link: <https://res.cloudinary.com>; rel=preconnect; crossorigin
+  Cache-Control: max-age=7200, private
+  Strict-Transport-Security: "max-age=63072000" always
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  X-Paris: "Fluctuat nec mergitur"
+  Referrer-Policy: strict-origin-when-cross-origin
+  Content-Security-Policy: default-src 'self' ; img-src 'self' res.cloudinary.com analytics.schapira.dev tracker.quadran.eu; script-src 'self' widget.weezevent.com www.weezevent.com analytics.schapira.dev www.google.com www.gstatic.com tracker.quadran.eu 'sha256-5Bn9J6SYY6nZL3+ZzEgpwvEWuSqOc3Ce5lV86AAO64w=' 'sha256-ZDjCdTstFUpLDovBdF6MXbSPB35alPr6sy4CYtyHSA4=' 'sha256-YjIPXUwDiVVDRjWsV/No3+mB0Tjt2iEgm38Mp7NofiY=' 'sha256-8Tl2DV2Kpw0lv/JcL9vtGaXREyP2UYKSMj5KQ8w01Qw=' ; connect-src 'self' analytics.schapira.dev widget.weezevent.com www.weezevent.com www.google.com www.gstatic.com res.cloudinary.com tracker.quadran.eu; style-src 'self' 'unsafe-inline'; object-src 'self'; font-src 'self' ; frame-ancestors 'none' ; frame-src https: ; manifest-src 'self' ; base-uri 'none' ;
+
+/*.woff2
+  Access-Control-Allow-Origin: "*"
+  Cache-Control: max-age=31536000, private
+/*.mp4
+  Cache-Control: max-age=31536000, private
+/*.css
+  Cache-Control: max-age=31536000, private
+/assets/*.js
+  Cache-Control: max-age=31536000, private
+/*.ico
+  Cache-Control: max-age=31536000, private
+/*.jpg
+  Cache-Control: max-age=31536000, private
+/*.jpeg
+  Cache-Control: max-age=31536000, private
+/*.png
+  Cache-Control: max-age=31536000, private
+/*.gif
+  Cache-Control: max-age=31536000, private
+/*.svg
+  Cache-Control: max-age=31536000, private
