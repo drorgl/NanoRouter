@@ -1,0 +1,48 @@
+name: PlatformIO Linux Test
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  test:
+    # 1. CHANGE: Use the standard Linux runner
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Cache PlatformIO Dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+          key: ${{ runner.os }}-pio-${{ hashFiles('platformio.ini') }}
+          restore-keys: |
+            ${{ runner.os }}-pio-
+
+      - name: Install PlatformIO Core
+        run: pip install --upgrade platformio
+
+      - name: Run PlatformIO Build (ESP32-S3)
+        run: pio test -e esp32s3  --without-uploading --without-testing
+
+      - name: Run PlatformIO Test (Linux Native)
+        run: pio test -e linux_x64 --junit-output-path test-results.xml
+
+      - name: Test Report
+        uses: dorny/test-reporter@v2
+        if: ${{ !cancelled() }}       # run this step even if previous step failed
+        with:
+          name: JEST Tests            # Name of the check run which will be created
+          path: test-results.xml    # Path to test results
+          reporter: jest-junit        # Format of test results

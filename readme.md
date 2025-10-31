@@ -6,6 +6,8 @@
 
 This project implements a generic web routing middleware inspired by Netlify's `_headers` and `_redirects` [configuration files](https://docs.netlify.com/manage/routing/overview/). It provides a flexible way to manage HTTP headers and URL redirects/rewrites for web applications.
 
+This project was vibe-coded using cline / gemini as an experiment.
+
 ## Overview
 
 The NanoRouter middleware allows you to define custom HTTP headers and powerful routing rules (redirects, rewrites, and proxies) using simple configuration files. These rules are processed by the middleware to control traffic flow and enhance content delivery within a web server environment.
