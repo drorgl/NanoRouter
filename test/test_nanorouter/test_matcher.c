@@ -132,7 +132,7 @@ void test_match_query_exact_match(void) {
 }
 
 void test_match_query_placeholder_capture(void) {
-    nr_matched_params_t matched_params;
+    nr_matched_params_t matched_params = {0}; // Initialize to zero
     redirect_rule_t rule = create_test_rule("/path", "/newpath", 200, false);
     add_rule_query_param(&rule, "id", "", true); // is_present = true for placeholder
     TEST_ASSERT_TRUE(nr_match_query_params("id=456", rule.query_params, rule.num_query_params, &matched_params));
@@ -150,7 +150,7 @@ void test_match_query_multiple_params_exact(void) {
 }
 
 void test_match_query_multiple_params_mixed(void) {
-    nr_matched_params_t matched_params;
+    nr_matched_params_t matched_params = {0}; // Initialize to zero
     redirect_rule_t rule = create_test_rule("/path", "/newpath", 200, false);
     add_rule_query_param(&rule, "id", "", true);
     add_rule_query_param(&rule, "tag", "test", false);

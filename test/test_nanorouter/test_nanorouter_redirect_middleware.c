@@ -326,12 +326,18 @@ void test_nanorouter_process_redirect_request_complex_splat_and_query() {
 void test_nanorouter_process_redirect_request_long_url_truncation() {
     nanorouter_redirect_rule_list_t *list = nanorouter_redirect_rule_list_create();
     char long_from_route[NR_MAX_ROUTE_LEN + 1];
-    char long_to_route[NR_MAX_ROUTE_LEN + 1];
+    char long_to_route[NR_MAX_ROUTE_LEN + 1]; // Ensure this buffer is large enough for the test case
     memset(long_from_route, 'a', NR_MAX_ROUTE_LEN);
     long_from_route[NR_MAX_ROUTE_LEN] = '\0';
-    memset(long_to_route, 'b', NR_REDIRECT_MAX_URL_LEN + 5); // Longer than max allowed
-    long_to_route[NR_REDIRECT_MAX_URL_LEN + 4] = '\0';
+    // The 'to_route' in redirect_rule_t is NR_MAX_ROUTE_LEN.
+    // We want to test truncation, so we provide a string longer than NR_REDIRECT_MAX_URL_LEN
+    // but ensure we don't overflow the local buffer 'long_to_route'.
+    // The actual truncation should happen within create_test_rule or nanorouter_process_redirect_request.
+    memset(long_to_route, 'b', NR_MAX_ROUTE_LEN); // Fill up to the buffer's capacity
+    long_to_route[NR_MAX_ROUTE_LEN] = '\0'; // Null-terminate the local buffer
 
+    // When creating the rule, if 'to' is longer than NR_MAX_ROUTE_LEN, it should be truncated by create_test_rule.
+    // The test itself should not cause a stack overflow.
     redirect_rule_t rule1 = create_test_rule(long_from_route, long_to_route, 301, false);
     nanorouter_redirect_rule_list_add_rule(list, &rule1);
 
