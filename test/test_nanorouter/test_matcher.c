@@ -124,7 +124,7 @@ void test_match_path_root_exact(void) {
 // --- Query Parameter Matching Tests (nr_match_query_params) ---
 
 void test_match_query_exact_match(void) {
-    nr_matched_params_t matched_params;
+    nr_matched_params_t matched_params = {0};
     redirect_rule_t rule = create_test_rule("/path", "/newpath", 200, false);
     add_rule_query_param(&rule, "id", "123", false);
     TEST_ASSERT_TRUE(nr_match_query_params("id=123", rule.query_params, rule.num_query_params, &matched_params));
@@ -141,7 +141,7 @@ void test_match_query_placeholder_capture(void) {
 }
 
 void test_match_query_multiple_params_exact(void) {
-    nr_matched_params_t matched_params;
+    nr_matched_params_t matched_params = {0};
     redirect_rule_t rule = create_test_rule("/path", "/newpath", 200, false);
     add_rule_query_param(&rule, "id", "123", false);
     add_rule_query_param(&rule, "tag", "test", false);
@@ -181,7 +181,7 @@ void test_match_query_rule_has_param_url_does_not(void) {
 }
 
 void test_match_query_url_has_extra_params(void) {
-    nr_matched_params_t matched_params;
+    nr_matched_params_t matched_params = {0};
     redirect_rule_t rule = create_test_rule("/path", "/newpath", 200, false);
     add_rule_query_param(&rule, "id", "123", false);
     TEST_ASSERT_TRUE(nr_match_query_params("id=123&extra=param", rule.query_params, rule.num_query_params, &matched_params));
