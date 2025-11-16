@@ -133,13 +133,15 @@ bool nanorouter_process_redirect_request(
     nanorouter_redirect_response_t *response_context,
     const nanorouter_request_context_t *request_context
 ) {
+    // Initialize response_context to indicate no redirect by default
+    if (response_context != NULL) {
+        response_context->new_url[0] = '\0';
+        response_context->status_code = 0;
+    }
+
     if (request_url == NULL || rules == NULL || response_context == NULL) {
         return false;
     }
-
-    // Initialize response_context to indicate no redirect by default
-    response_context->new_url[0] = '\0';
-    response_context->status_code = 0;
 
     nanorouter_redirect_rule_t *current_rule_node = rules->head;
     while (current_rule_node != NULL) {

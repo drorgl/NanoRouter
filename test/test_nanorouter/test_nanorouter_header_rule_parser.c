@@ -199,7 +199,7 @@ void test_nanorouter_parse_headers_file_malformed_header(void) {
 }
 
 
-void test_header_rule_parser(void) {
+int test_header_rule_parser(void) {
     UNITY_BEGIN();
     RUN_TEST(test_nanorouter_header_rule_list_create_and_free);
     RUN_TEST(test_nanorouter_header_rule_list_add_single_rule);
@@ -209,7 +209,7 @@ void test_header_rule_parser(void) {
     RUN_TEST(test_nanorouter_parse_headers_file_multiple_headers_same_route);
     RUN_TEST(test_nanorouter_parse_headers_file_no_final_newline);
     RUN_TEST(test_nanorouter_parse_headers_file_malformed_header);
-    UNITY_END();
+    return UNITY_END();
 }
 
 // Not adding a main function here, as Unity tests are typically run via a test runner.

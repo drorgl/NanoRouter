@@ -2,6 +2,7 @@
 #include "nanorouter_string_utils.h" // For nr_string_split, nr_trim_whitespace
 #include <string.h> // For strcmp, strcasecmp, strncpy
 #include <stdlib.h> // For malloc, free
+#include <stdio.h>
 
 // Helper struct for nr_string_split callback to check if a value is present
 typedef struct {
@@ -24,19 +25,23 @@ static void value_search_callback(const char *token, size_t token_len, size_t to
     strncpy(temp_token, token, token_len);
     temp_token[token_len] = '\0';
     char *trimmed_token = nr_trim_whitespace(temp_token);
-
     if (search_data->is_language_match) {
-        // For language matching, check if the target value starts with the trimmed token
-        // e.g., rule "en" should match context "en-US"
-        size_t rule_lang_len = strlen(trimmed_token);
-        if (strncasecmp(search_data->target_value, trimmed_token, rule_lang_len) == 0) {
-            // Ensure it's a full match or followed by a hyphen
-            if (strlen(search_data->target_value) == rule_lang_len || (search_data->target_value[rule_lang_len] == '-' && strlen(search_data->target_value) > rule_lang_len)) {
+        // For language matching, the rule can be a prefix of the context value.
+        // e.g., rule "en" should match context "en-US".
+        size_t rule_len = strlen(trimmed_token);
+        size_t context_len = strlen(search_data->target_value);
+
+        if (rule_len > context_len) {
+            // Rule is longer than context value, so no match is possible.
+        } else if (strncasecmp(trimmed_token, search_data->target_value, rule_len) == 0) {
+            // It's a match if the lengths are equal, or if the context value
+            // has a subtag separator after the matched part.
+            if (rule_len == context_len || search_data->target_value[rule_len] == '-') {
                 search_data->found = true;
             }
         }
     } else {
-        // For other types, perform exact match
+        // For other types, perform exact case-insensitive match
         if (strcasecmp(trimmed_token, search_data->target_value) == 0) {
             search_data->found = true;
         }
@@ -53,11 +58,11 @@ typedef struct {
 
 // Callback function for nr_string_split to collect language tags
 static void language_tag_collection_callback(const char *token, size_t token_len, size_t token_index, void *user_data) {
-    (void)token_index; // Unused parameter
     language_tags_collection_t *collection = (language_tags_collection_t *)user_data;
 
     // Ignore q-value parts (e.g., ";q=0.9")
-    const char *semicolon_pos = strchr(token, ';');
+    // Use memchr instead of strchr since token is not null-terminated
+    const char *semicolon_pos = memchr(token, ';', token_len);
     size_t effective_len = (semicolon_pos != NULL) ? (size_t)(semicolon_pos - token) : token_len;
 
     // Create a temporary buffer for the token to trim it
@@ -173,7 +178,7 @@ bool nanorouter_match_conditions(
                 char **extracted_tags = NULL;
                 uint8_t num_extracted_tags = 0;
                 nr_extract_primary_language_tags(request_context->language, &extracted_tags, &num_extracted_tags);
-
+                
                 for (uint8_t j = 0; j < num_extracted_tags; j++) {
                     if (nr_list_contains_value(condition->value, extracted_tags[j], true)) { // Use language-specific matching
                         condition_met = true;
@@ -196,10 +201,12 @@ bool nanorouter_match_conditions(
             return false;
         }
 
+        // If any single condition is not met, the entire set of conditions fails.
         if (!condition_met) {
-            return false; // If any single condition is not met, the entire rule fails.
+            return false;
         }
     }
 
-    return true; // All conditions were met.
+    // If the loop completes, it means all conditions were successfully met.
+    return true;
 }

@@ -257,7 +257,6 @@ typedef struct {
 
 // Mock callback function for nr_process_redirect_rule tests
 void mock_redirect_rule_part_callback(const char *token, size_t token_len, nr_redirect_part_type_t part_type, void *user_data) {
-    printf("called %s\n", token);
     TestContext *context = (TestContext *)user_data;
 
     TEST_ASSERT_NOT_NULL(context);
@@ -285,8 +284,6 @@ void test_nr_process_redirect_rule_basic_301(void) {
         .num_expected_parts = sizeof(expected) / sizeof(expected[0]),
         .current_part_index = 0
     };
-
-    printf("expected %d\n", context.num_expected_parts);
 
     // Act
     nr_process_redirect_rule(rule, strlen(rule), mock_redirect_rule_part_callback, &context);
@@ -509,7 +506,7 @@ void test_nr_process_redirect_rule_unknown_part(void) {
     TEST_ASSERT_EQUAL(context.num_expected_parts, context.current_part_index);
 }
 
-void test_rule_parser_redirect_rules(void) {
+int test_rule_parser_redirect_rules(void) {
     UNITY_BEGIN();
     RUN_TEST(test_nr_process_redirect_rule_basic_301);
     RUN_TEST(test_nr_process_redirect_rule_basic_200_force);
@@ -522,10 +519,10 @@ void test_rule_parser_redirect_rules(void) {
     RUN_TEST(test_nr_process_redirect_rule_multiple_conditions);
     RUN_TEST(test_nr_process_redirect_rule_only_from_to);
     RUN_TEST(test_nr_process_redirect_rule_unknown_part);
-    UNITY_END();
+    return UNITY_END();
 }
 
-void test_rule_parser(void) {
+int test_rule_parser(void) {
     UNITY_BEGIN();
     RUN_TEST(test_nr_parse_redirect_rule_basic_301);
     RUN_TEST(test_nr_parse_redirect_rule_basic_200_force);
@@ -538,7 +535,7 @@ void test_rule_parser(void) {
     RUN_TEST(test_nr_parse_redirect_rule_multiple_conditions);
     RUN_TEST(test_nr_parse_redirect_rule_only_from_to);
     RUN_TEST(test_nr_parse_redirect_rule_unknown_part);
-    UNITY_END();
+    return UNITY_END();
 }
 
 #endif // TEST_NANOROUTER_RULE_PARSER_H

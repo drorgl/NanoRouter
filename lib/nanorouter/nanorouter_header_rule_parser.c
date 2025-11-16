@@ -103,10 +103,8 @@ bool nanorouter_parse_headers_file(const char *file_content, nanorouter_header_r
         }
 
         if (line_len >= sizeof(line_buffer)) {
-            // Line too long, skip or handle error
-            if (line_end == NULL) break; // End of content
-            current_pos = line_end + 1;
-            continue;
+            // Truncate line to fit in buffer
+            line_len = sizeof(line_buffer) - 1;
         }
         strncpy(line_buffer, current_pos, line_len);
         line_buffer[line_len] = '\0';
@@ -125,8 +123,8 @@ bool nanorouter_parse_headers_file(const char *file_content, nanorouter_header_r
             }
             // Start a new rule
             memset(&current_rule, 0, sizeof(header_rule_t));
-            strncpy(current_rule.from_route, trimmed_line, NR_MAX_ROUTE_LEN);
-            current_rule.from_route[NR_MAX_ROUTE_LEN] = '\0';
+            strncpy(current_rule.from_route, trimmed_line, NR_MAX_ROUTE_LEN - 1);
+            current_rule.from_route[NR_MAX_ROUTE_LEN - 1] = '\0';
             current_rule.num_headers = 0;
             in_rule_block = true;
         } else if (in_rule_block) {
@@ -134,17 +132,24 @@ bool nanorouter_parse_headers_file(const char *file_content, nanorouter_header_r
             char *colon_pos = strchr(trimmed_line, ':');
             if (colon_pos != NULL) {
                 if (current_rule.num_headers < NR_MAX_HEADERS_PER_RULE) {
-                    // Extract key
+                    // Extract key with proper length enforcement
                     size_t key_len = colon_pos - trimmed_line;
+                    if (key_len >= NR_MAX_HEADER_KEY_LEN) {
+                        key_len = NR_MAX_HEADER_KEY_LEN;
+                    }
                     strncpy(current_rule.headers[current_rule.num_headers].key, trimmed_line, key_len);
                     current_rule.headers[current_rule.num_headers].key[key_len] = '\0';
                     nr_trim_whitespace(current_rule.headers[current_rule.num_headers].key);
 
-                    // Extract value
+                    // Extract value with proper length enforcement
                     char *value_start = colon_pos + 1;
                     char temp_value_buffer[NR_MAX_HEADER_VALUE_LEN + 1];
-                    strncpy(temp_value_buffer, value_start, NR_MAX_HEADER_VALUE_LEN);
-                    temp_value_buffer[NR_MAX_HEADER_VALUE_LEN] = '\0';
+                    size_t value_len = strlen(value_start);
+                    if (value_len > NR_MAX_HEADER_VALUE_LEN) {
+                        value_len = NR_MAX_HEADER_VALUE_LEN;
+                    }
+                    strncpy(temp_value_buffer, value_start, value_len);
+                    temp_value_buffer[value_len] = '\0';
                     char *trimmed_value = nr_trim_whitespace(temp_value_buffer); // Trim the temporary buffer
 
                     strncpy(current_rule.headers[current_rule.num_headers].value, trimmed_value, NR_MAX_HEADER_VALUE_LEN);

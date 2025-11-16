@@ -9,8 +9,6 @@
 
 #include "nanorouter_config.h" // For configuration defines
 
-// --- Struct Definitions ---
-
 /**
  * @brief Structure to hold request-specific context for condition matching.
  *        All string fields should be null-terminated.
@@ -20,8 +18,6 @@ typedef struct {
     char country[NR_MAX_COUNTRY_LEN + 1];   /**< The country code(s) from GeoIP data. */
     char language[NR_MAX_LANGUAGE_LEN + 1]; /**< The language code(s) from Accept-Language header. */
 } nanorouter_request_context_t;
-
-// --- Function Prototypes ---
 
 /**
  * @brief Matches a set of conditions against the provided request context.
@@ -41,5 +37,16 @@ bool nanorouter_match_conditions(
     uint8_t num_conditions,
     const nanorouter_request_context_t *request_context
 );
+
+/**
+ * @brief Performs language-specific matching: checks if the rule is a prefix of the context tag.
+ *        E.g., rule "en" matches context "en-US".
+ *        Also handles exact matches.
+ *
+ * @param rule The language rule from the condition (e.g., "en", "en-US").
+ * @param context_tag The language tag extracted from the request context (e.g., "en-US", "fr").
+ * @return true if the rule matches the context tag, false otherwise.
+ */
+static bool nr_match_language_tag(const char *rule, const char *context_tag);
 
 #endif // NANOROUTER_CONDITION_MATCHING_H

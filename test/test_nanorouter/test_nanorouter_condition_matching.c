@@ -149,7 +149,7 @@ void test_nanorouter_match_conditions_case_insensitivity(void) {
     TEST_ASSERT_TRUE(nanorouter_match_conditions(conditions, 3, &context));
 }
 
-void test_nanorouter_condition_matching(void) {
+int test_nanorouter_condition_matching(void) {
     UNITY_BEGIN();
     RUN_TEST(test_nanorouter_match_conditions_no_conditions);
     RUN_TEST(test_nanorouter_match_conditions_null_context_with_conditions);
@@ -166,7 +166,7 @@ void test_nanorouter_condition_matching(void) {
     RUN_TEST(test_nanorouter_match_conditions_multiple_conditions_one_fails);
     RUN_TEST(test_nanorouter_match_conditions_context_field_empty_rule_has_condition);
     RUN_TEST(test_nanorouter_match_conditions_case_insensitivity);
-    UNITY_END();
+    return UNITY_END();
 }
 
 // Not adding a main function here, as Unity tests are typically run via a test runner.

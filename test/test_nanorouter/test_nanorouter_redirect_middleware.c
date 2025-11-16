@@ -352,9 +352,98 @@ void test_nanorouter_process_redirect_request_long_url_truncation() {
     nanorouter_redirect_rule_list_free(list);
 }
 
+void test_nanorouter_process_redirect_request_null_request_url() {
+    nanorouter_redirect_rule_list_t *list = nanorouter_redirect_rule_list_create();
+    redirect_rule_t rule1 = create_test_rule("/test", "/redirect", 301, false);
+    nanorouter_redirect_rule_list_add_rule(list, &rule1);
+
+    nanorouter_redirect_response_t response;
+    nanorouter_request_context_t context = {0};
+    bool result = nanorouter_process_redirect_request(NULL, list, &response, &context);
+
+    TEST_ASSERT_FALSE(result);
+    TEST_ASSERT_EQUAL_STRING("", response.new_url);
+    TEST_ASSERT_EQUAL(0, response.status_code);
+
+    nanorouter_redirect_rule_list_free(list);
+}
+
+void test_nanorouter_process_redirect_request_null_rules() {
+    nanorouter_redirect_response_t response;
+    nanorouter_request_context_t context = {0};
+    bool result = nanorouter_process_redirect_request("/test", NULL, &response, &context);
+
+    TEST_ASSERT_FALSE(result);
+    TEST_ASSERT_EQUAL_STRING("", response.new_url);
+    TEST_ASSERT_EQUAL(0, response.status_code);
+}
+
+void test_nanorouter_process_redirect_request_null_response_context() {
+    nanorouter_redirect_rule_list_t *list = nanorouter_redirect_rule_list_create();
+    redirect_rule_t rule1 = create_test_rule("/test", "/redirect", 301, false);
+    nanorouter_redirect_rule_list_add_rule(list, &rule1);
+
+    nanorouter_request_context_t context = {0};
+    bool result = nanorouter_process_redirect_request("/test", list, NULL, &context);
+
+    TEST_ASSERT_FALSE(result);
+
+    nanorouter_redirect_rule_list_free(list);
+}
+
+void test_nanorouter_process_redirect_request_empty_request_url() {
+    nanorouter_redirect_rule_list_t *list = nanorouter_redirect_rule_list_create();
+    redirect_rule_t rule1 = create_test_rule("/test", "/redirect", 301, false);
+    nanorouter_redirect_rule_list_add_rule(list, &rule1);
+
+    nanorouter_redirect_response_t response;
+    nanorouter_request_context_t context = {0};
+    bool result = nanorouter_process_redirect_request("", list, &response, &context);
+
+    TEST_ASSERT_FALSE(result);
+    TEST_ASSERT_EQUAL_STRING("", response.new_url);
+    TEST_ASSERT_EQUAL(0, response.status_code);
+
+    nanorouter_redirect_rule_list_free(list);
+}
+
+void test_nanorouter_process_redirect_request_placeholder_not_found() {
+    nanorouter_redirect_rule_list_t *list = nanorouter_redirect_rule_list_create();
+    redirect_rule_t rule1 = create_test_rule("/test/:missing", "/redirect/:found", 301, false);
+    nanorouter_redirect_rule_list_add_rule(list, &rule1);
+
+    nanorouter_redirect_response_t response;
+    nanorouter_request_context_t context = {0};
+    bool result = nanorouter_process_redirect_request("/test/value", list, &response, &context);
+
+    TEST_ASSERT_TRUE(result);
+    // Should contain the placeholder as-is since :missing wasn't found
+    TEST_ASSERT_NOT_NULL(strstr(response.new_url, ":found"));
+    TEST_ASSERT_EQUAL(301, response.status_code);
+
+    nanorouter_redirect_rule_list_free(list);
+}
+
+void test_nanorouter_process_redirect_request_to_route_with_query() {
+    nanorouter_redirect_rule_list_t *list = nanorouter_redirect_rule_list_create();
+    redirect_rule_t rule1 = create_test_rule("/test", "/redirect?newparam=value", 301, false);
+    nanorouter_redirect_rule_list_add_rule(list, &rule1);
+
+    nanorouter_redirect_response_t response;
+    nanorouter_request_context_t context = {0};
+    bool result = nanorouter_process_redirect_request("/test?oldparam=oldvalue", list, &response, &context);
+
+    TEST_ASSERT_TRUE(result);
+    // When to_route contains ?, original query should not be appended
+    TEST_ASSERT_EQUAL_STRING("/redirect?newparam=value", response.new_url);
+    TEST_ASSERT_NULL(strstr(response.new_url, "oldparam"));
+
+    nanorouter_redirect_rule_list_free(list);
+}
+
 
 // --- Main Test Runner for this module ---
-void test_nanorouter_redirect_middleware() {
+int test_nanorouter_redirect_middleware() {
     UNITY_BEGIN();
 
     // Rule List Create Tests
@@ -386,8 +475,14 @@ void test_nanorouter_redirect_middleware() {
     RUN_TEST(test_nanorouter_process_redirect_request_multiple_rules_precedence);
     RUN_TEST(test_nanorouter_process_redirect_request_complex_splat_and_query);
     RUN_TEST(test_nanorouter_process_redirect_request_long_url_truncation);
+    RUN_TEST(test_nanorouter_process_redirect_request_null_request_url);
+    RUN_TEST(test_nanorouter_process_redirect_request_null_rules);
+    RUN_TEST(test_nanorouter_process_redirect_request_null_response_context);
+    RUN_TEST(test_nanorouter_process_redirect_request_empty_request_url);
+    RUN_TEST(test_nanorouter_process_redirect_request_placeholder_not_found);
+    RUN_TEST(test_nanorouter_process_redirect_request_to_route_with_query);
 
-    UNITY_END();
+    return UNITY_END();
 }
 
 // This is typically called from app_main() or main() in the main test file

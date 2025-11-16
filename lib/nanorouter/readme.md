@@ -390,7 +390,15 @@ The library includes comprehensive tests in `test/test_nanorouter/`. Run tests w
 
 ```bash
 # If using PlatformIO
-pio test -f test_nanorouter
+pio test -e native -f test_nanorouter
+```
+
+# Coverage
+
+The native environment is the only one generating the coverage report
+
+```bash 
+gcovr -v --add-tracefile ".pio/tests/*.json" --html-details .report/details.html --root . --exclude test/.* --exclude .pio/.*
 ```
 
 ## Examples

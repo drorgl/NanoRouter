@@ -267,7 +267,7 @@ void test_nr_string_split_with_str_len_limit(void) {
     TEST_ASSERT_EQUAL(user_data.expected_num_tokens, user_data.actual_call_count);
 }
 
-void test_string_utils(void) {
+int test_string_utils(void) {
     UNITY_BEGIN();
     RUN_TEST(test_nr_trim_string_no_extra_spaces);
     RUN_TEST(test_nr_trim_string_middle_spaces);
@@ -283,7 +283,7 @@ void test_string_utils(void) {
     RUN_TEST(test_nr_string_split_no_delimiter);
     RUN_TEST(test_nr_string_split_different_delimiter);
     RUN_TEST(test_nr_string_split_with_str_len_limit);
-    UNITY_END();
+    return UNITY_END();
 }
 
 #endif // TEST_STRING_UTILS_H

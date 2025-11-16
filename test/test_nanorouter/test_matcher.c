@@ -251,7 +251,7 @@ void test_nanorouter_match_rule_no_match_query(void) {
 }
 
 // --- Test Runner ---
-void test_matcher(void) {
+int test_matcher(void) {
     UNITY_BEGIN();
 
     // Path Matching Tests
@@ -286,5 +286,5 @@ void test_matcher(void) {
     RUN_TEST(test_nanorouter_match_rule_no_match_path);
     RUN_TEST(test_nanorouter_match_rule_no_match_query);
 
-    UNITY_END();
+    return UNITY_END();
 }

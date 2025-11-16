@@ -106,6 +106,10 @@ void nr_string_split(const char *str, size_t str_len, const char *delimiter, nr_
             callback(&str[token_start], token_end - token_start, token_index++, user_data);
         }
 
-        current_pos = token_end;
+        if (token_end < str_len) {
+            current_pos = token_end + delimiter_len;
+        } else {
+            current_pos = token_end;
+        }
     }
 }

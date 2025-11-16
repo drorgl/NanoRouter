@@ -220,7 +220,7 @@ void test_nanorouter_process_header_request_no_duplicate_values_from_different_r
 }
 
 
-void test_nanorouter_headers_middleware(void) {
+int test_nanorouter_headers_middleware(void) {
     UNITY_BEGIN();
     RUN_TEST(test_nanorouter_process_header_request_no_match);
     RUN_TEST(test_nanorouter_process_header_request_basic_match);
@@ -229,7 +229,7 @@ void test_nanorouter_headers_middleware(void) {
     RUN_TEST(test_nanorouter_process_header_request_multi_value_headers);
     RUN_TEST(test_nanorouter_process_header_request_ignored_headers);
     RUN_TEST(test_nanorouter_process_header_request_no_duplicate_values_from_different_rules);
-    UNITY_END();
+    return UNITY_END();
 }
 
 // Not adding a main function here, as Unity tests are typically run via a test runner.
