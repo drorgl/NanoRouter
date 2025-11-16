@@ -234,7 +234,7 @@ bool nanorouter_process_redirect_request(
                         bool first_param = true;
 
                         while (current_param_pair != NULL) {
-                            char *equals_sign = strchr(current_param_pair, '=');
+                            const char *equals_sign = strchr(current_param_pair, '=');
                             char param_key[NR_MAX_QUERY_KEY_LEN + 1];
                             
                             if (equals_sign) {

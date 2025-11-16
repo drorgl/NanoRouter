@@ -26,7 +26,7 @@ static nr_condition_item_t create_condition_item(const char *key, const char *va
 
 // Test edge cases for condition matching
 void test_nanorouter_match_conditions_unknown_condition_key() {
-    nr_condition_item_t conditions[] = {
+    const nr_condition_item_t conditions[] = {
         create_condition_item("UnknownCondition", "some_value")
     };
     nanorouter_request_context_t context = create_test_context("example.com", "us", "en");
@@ -36,7 +36,7 @@ void test_nanorouter_match_conditions_unknown_condition_key() {
 }
 
 void test_nanorouter_match_conditions_empty_condition_value() {
-    nr_condition_item_t conditions[] = {
+    const nr_condition_item_t conditions[] = {
         create_condition_item("Country", "")
     };
     nanorouter_request_context_t context = create_test_context(NULL, "us", NULL);
@@ -46,7 +46,7 @@ void test_nanorouter_match_conditions_empty_condition_value() {
 }
 
 void test_nanorouter_match_conditions_empty_context_country() {
-    nr_condition_item_t conditions[] = {
+    const nr_condition_item_t conditions[] = {
         create_condition_item("Country", "us")
     };
     nanorouter_request_context_t context = create_test_context(NULL, "", NULL);
@@ -56,7 +56,7 @@ void test_nanorouter_match_conditions_empty_context_country() {
 }
 
 void test_nanorouter_match_conditions_empty_context_language() {
-    nr_condition_item_t conditions[] = {
+    const nr_condition_item_t conditions[] = {
         create_condition_item("Language", "en")
     };
     nanorouter_request_context_t context = create_test_context(NULL, NULL, "");
@@ -66,7 +66,7 @@ void test_nanorouter_match_conditions_empty_context_language() {
 }
 
 void test_nanorouter_match_conditions_empty_context_domain() {
-    nr_condition_item_t conditions[] = {
+    const nr_condition_item_t conditions[] = {
         create_condition_item("Domain", "example.com")
     };
     nanorouter_request_context_t context = create_test_context("", NULL, NULL);
@@ -76,7 +76,7 @@ void test_nanorouter_match_conditions_empty_context_domain() {
 }
 
 void test_nanorouter_match_conditions_null_condition_key() {
-    nr_condition_item_t conditions[] = {
+    const nr_condition_item_t conditions[] = {
         create_condition_item("", "value")
     };
     nanorouter_request_context_t context = create_test_context("example.com", "us", "en");
@@ -86,7 +86,7 @@ void test_nanorouter_match_conditions_null_condition_key() {
 }
 
 void test_nanorouter_match_conditions_condition_with_null_terminator() {
-    nr_condition_item_t conditions[] = {
+    const nr_condition_item_t conditions[] = {
         create_condition_item("Country", "us")
     };
     nanorouter_request_context_t context = create_test_context(NULL, "us", NULL);
@@ -96,7 +96,7 @@ void test_nanorouter_match_conditions_condition_with_null_terminator() {
 }
 
 void test_nanorouter_match_conditions_multiple_conditions_first_fails() {
-    nr_condition_item_t conditions[] = {
+    const nr_condition_item_t conditions[] = {
         create_condition_item("Country", "gb"), // Will fail
         create_condition_item("Language", "en") // Should not be checked
     };
@@ -107,7 +107,7 @@ void test_nanorouter_match_conditions_multiple_conditions_first_fails() {
 }
 
 void test_nanorouter_match_conditions_language_empty_extracted_tags() {
-    nr_condition_item_t conditions[] = {
+    const nr_condition_item_t conditions[] = {
         create_condition_item("Language", "en")
     };
     nanorouter_request_context_t context = create_test_context(NULL, NULL, ""); // Empty language header
@@ -117,7 +117,7 @@ void test_nanorouter_match_conditions_language_empty_extracted_tags() {
 }
 
 void test_nanorouter_match_conditions_language_malformed_header() {
-    nr_condition_item_t conditions[] = {
+    const nr_condition_item_t conditions[] = {
         create_condition_item("Language", "en")
     };
     // Malformed language header with no actual language codes
@@ -128,7 +128,7 @@ void test_nanorouter_match_conditions_language_malformed_header() {
 }
 
 void test_nanorouter_match_conditions_language_q_values_only() {
-    nr_condition_item_t conditions[] = {
+    const nr_condition_item_t conditions[] = {
         create_condition_item("Language", "en")
     };
     // Language header with only q-values, no actual language codes
@@ -139,7 +139,7 @@ void test_nanorouter_match_conditions_language_q_values_only() {
 }
 
 void test_nanorouter_match_conditions_case_variations() {
-    nr_condition_item_t conditions[] = {
+    const nr_condition_item_t conditions[] = {
         create_condition_item("CoUnTrY", "US"),
         create_condition_item("LaNgUaGe", "EN"),
         create_condition_item("DoMaIn", "EXAMPLE.COM")
@@ -151,7 +151,7 @@ void test_nanorouter_match_conditions_case_variations() {
 }
 
 void test_nanorouter_match_conditions_country_list_with_spaces() {
-    nr_condition_item_t conditions[] = {
+    const nr_condition_item_t conditions[] = {
         create_condition_item("Country", "us, gb, au") // Spaces in the list
     };
     nanorouter_request_context_t context_us = create_test_context(NULL, "us", NULL);
@@ -165,7 +165,7 @@ void test_nanorouter_match_conditions_country_list_with_spaces() {
 }
 
 void test_nanorouter_match_conditions_language_partial_match() {
-    nr_condition_item_t conditions[] = {
+    const nr_condition_item_t conditions[] = {
         create_condition_item("Language", "en") // Just "en"
     };
     nanorouter_request_context_t context = create_test_context(NULL, NULL, "en-US,en;q=0.9,fr;q=0.8");
@@ -175,7 +175,7 @@ void test_nanorouter_match_conditions_language_partial_match() {
 }
 
 void test_nanorouter_match_conditions_language_exact_match_only() {
-    nr_condition_item_t conditions[] = {
+    const nr_condition_item_t conditions[] = {
         create_condition_item("Language", "en-US") // Exact "en-US"
     };
     nanorouter_request_context_t context1 = create_test_context(NULL, NULL, "en-US,en;q=0.9");
@@ -188,7 +188,7 @@ void test_nanorouter_match_conditions_language_exact_match_only() {
 }
 
 void test_nanorouter_match_conditions_language_no_match_similar() {
-    nr_condition_item_t conditions[] = {
+    const nr_condition_item_t conditions[] = {
         create_condition_item("Language", "en") // Just "en"
     };
     nanorouter_request_context_t context = create_test_context(NULL, NULL, "fr,de,es");

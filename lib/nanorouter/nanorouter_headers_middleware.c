@@ -40,8 +40,8 @@ static void header_value_search_callback(const char *token, size_t token_len, si
     header_value_search_data_t *search_data = (header_value_search_data_t *)user_data;
 
     // Create a temporary buffer for the token to trim it
-    char temp_token[NR_MAX_HEADER_VALUE_LEN]; // NR_MAX_HEADER_VALUE_LEN is defined in nanorouter_header_rule_parser.h
     if (token_len < NR_MAX_HEADER_VALUE_LEN) {
+        char temp_token[NR_MAX_HEADER_VALUE_LEN]; // NR_MAX_HEADER_VALUE_LEN is defined in nanorouter_header_rule_parser.h
         strncpy(temp_token, token, token_len);
         temp_token[token_len] = '\0';
         char *trimmed_token = nr_trim_whitespace(temp_token); // Use existing trim function

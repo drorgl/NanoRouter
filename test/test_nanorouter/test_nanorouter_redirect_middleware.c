@@ -32,17 +32,17 @@ void add_query_param_to_rule(redirect_rule_t *rule, const char *key, const char 
     }
 }
 
-// Helper function to add a condition to a redirect_rule_t
-void add_condition_to_rule(redirect_rule_t *rule, const char *key, const char *value, bool is_present) {
-    if (rule->num_conditions < NR_MAX_CONDITION_ITEMS) {
-        strncpy(rule->conditions[rule->num_conditions].key, key, NR_MAX_CONDITION_KEY_LEN);
-        rule->conditions[rule->num_conditions].key[NR_MAX_CONDITION_KEY_LEN] = '\0';
-        strncpy(rule->conditions[rule->num_conditions].value, value, NR_MAX_CONDITION_VALUE_LEN);
-        rule->conditions[rule->num_conditions].value[NR_MAX_CONDITION_VALUE_LEN] = '\0';
-        rule->conditions[rule->num_conditions].is_present = is_present;
-        rule->num_conditions++;
-    }
-}
+// // Helper function to add a condition to a redirect_rule_t
+// void add_condition_to_rule(redirect_rule_t *rule, const char *key, const char *value, bool is_present) {
+//     if (rule->num_conditions < NR_MAX_CONDITION_ITEMS) {
+//         strncpy(rule->conditions[rule->num_conditions].key, key, NR_MAX_CONDITION_KEY_LEN);
+//         rule->conditions[rule->num_conditions].key[NR_MAX_CONDITION_KEY_LEN] = '\0';
+//         strncpy(rule->conditions[rule->num_conditions].value, value, NR_MAX_CONDITION_VALUE_LEN);
+//         rule->conditions[rule->num_conditions].value[NR_MAX_CONDITION_VALUE_LEN] = '\0';
+//         rule->conditions[rule->num_conditions].is_present = is_present;
+//         rule->num_conditions++;
+//     }
+// }
 
 // --- Test Cases for nanorouter_redirect_rule_list_create ---
 void test_nanorouter_redirect_rule_list_create_success() {

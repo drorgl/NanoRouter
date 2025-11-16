@@ -64,7 +64,7 @@ void test_nanorouter_trim_string_tabs_and_spaces() {
 
 // Test edge cases for nr_trim_whitespace
 void test_nanorouter_trim_whitespace_null_input() {
-    char *result = nr_trim_whitespace(NULL);
+    const char *result = nr_trim_whitespace(NULL);
     TEST_ASSERT_NULL(result);
 }
 

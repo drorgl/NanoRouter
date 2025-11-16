@@ -88,9 +88,9 @@ static void internal_redirect_split_callback(const char *token, size_t token_len
             // If not status, query, or condition, and to_route is identified, it's unknown
             // This case should ideally not be reached if all parts are well-defined
             // but serves as a fallback.
-            if (part_type == NR_REDIRECT_PART_UNKNOWN) {
-                part_type = NR_REDIRECT_PART_UNKNOWN;
-            }
+            // if (part_type == NR_REDIRECT_PART_UNKNOWN) {
+            //     part_type = NR_REDIRECT_PART_UNKNOWN;
+            // }
         }
     }
 
