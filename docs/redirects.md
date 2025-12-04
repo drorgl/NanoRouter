@@ -34,6 +34,8 @@ You can specify an HTTP status code for any redirect rule. If left unspecified, 
 *   **`404`**: Not Found. Used to present custom 404 pages. The URL in the browser address bar will not change.
 *   **`200`**: OK. Used for rewrites and proxying. The URL in the browser address bar will not change.
 
+**Invalid Status Codes:** If a redirect rule contains an invalid or non-numeric HTTP status code (e.g., `9999999999`, `invalid_status`), the rule will be considered malformed. In such cases, the `nr_parse_redirect_rule` function will return `false`, and the `from_route` and `to_route` fields of the parsed rule will be cleared. This ensures that invalid rules are not partially applied and are effectively ignored by the NanoRouter middleware.
+
 Example with status codes:
 
 ```
@@ -41,6 +43,7 @@ Example with status codes:
 /temporary-page   /current-page          302
 /non-existent     /custom-404.html       404
 /app              /index.html            200
+/bad-status       /error-page            999  # This rule will be ignored due to invalid status
 ```
 
 ### Custom 404 Page Handling

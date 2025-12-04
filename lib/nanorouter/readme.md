@@ -375,6 +375,7 @@ The following headers are ignored by design to prevent conflicts with the web se
 - **302**: Temporary redirect (browser shows new URL)
 - **404**: Not found (browser shows original URL)
 - **200**: Internal rewrite/proxy (browser shows original URL)
+- **Invalid Status Codes**: Rules with invalid or non-numeric status codes will fail parsing and will not be applied.
 
 ### Force Mode
 
