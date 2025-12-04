@@ -26,6 +26,7 @@ typedef struct {
     char to_route[NR_MAX_ROUTE_LEN + 1];
     uint16_t status_code;
     bool force;
+    bool parsing_error; // New field to indicate parsing errors
 
     nr_key_value_item_t query_params[NR_MAX_QUERY_ITEMS];
     uint8_t num_query_params;

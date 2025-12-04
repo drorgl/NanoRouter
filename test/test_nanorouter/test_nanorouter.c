@@ -10,6 +10,7 @@
 #include "test_headers_edge_cases.h"
 #include "test_string_utils_edge_cases.h"
 #include "test_condition_matching_edge_cases.h"
+#include "test_nanorouter_redirect_rule_parser_edge_cases.h"
 #include <string.h> // For strncpy
 #include <stdlib.h> // For free
 #include <stdbool.h> // For bool type
@@ -32,6 +33,7 @@ int main(void) {
         test_nanorouter_headers_middleware() | // Run the headers middleware tests
         test_nanorouter_condition_matching() | // Run condition matching tests
         test_condition_matching_edge_cases();// Run condition matching edge case tests
+        test_parser_edge_cases();
 }
 
 void app_main() {

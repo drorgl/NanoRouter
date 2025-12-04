@@ -29,11 +29,13 @@ typedef struct {
     size_t token_count;
     bool to_route_identified;
     bool status_identified;
+    redirect_rule_t *rule_ptr; // Pointer to the rule being parsed
 } InternalProcessContext;
 
 // Internal callback for nr_string_split to process redirect rule parts
 static void internal_redirect_split_callback(const char *token, size_t token_len, size_t token_index, void *user_data) {
     InternalProcessContext *context = (InternalProcessContext *)user_data;
+    redirect_rule_t *rule = context->rule_ptr; // Get the rule pointer
     nr_redirect_part_type_t part_type = NR_REDIRECT_PART_UNKNOWN;
 
     // Make a mutable copy of the token to allow modification (e.g., removing '!')
@@ -62,8 +64,18 @@ static void internal_redirect_split_callback(const char *token, size_t token_len
             part_type = NR_REDIRECT_PART_TO_ROUTE;
             context->to_route_identified = true;
         } else {
-            // Check for status code (numeric, possibly with '!')
-            if (!context->status_identified) {
+            // After FROM_ROUTE and TO_ROUTE are identified, check for other parts
+            // 1. Check for query parameters (contains '=')
+            if (strchr(mutable_token, '=') != NULL) {
+                // Check if it's a condition (e.g., Country=, Language=)
+                if (strncmp(mutable_token, "Country=", 8) == 0 || strncmp(mutable_token, "Language=", 9) == 0) {
+                    part_type = NR_REDIRECT_PART_CONDITION;
+                } else {
+                    part_type = NR_REDIRECT_PART_QUERY;
+                }
+            }
+            // 2. Check for status code (numeric, possibly with '!')
+            else if (!context->status_identified) { // Only try to identify status if not already identified
                 size_t actual_token_len = token_len;
                 bool is_force = false;
                 if (token_len > 0 && mutable_token[token_len - 1] == '!') {
@@ -84,13 +96,12 @@ static void internal_redirect_split_callback(const char *token, size_t token_len
                     context->token_count++; // Increment after potential two callbacks
                     return; // Skip default callback at the end
                 }
+                // If it's not numeric, it's not a status code, so it falls through to UNKNOWN
             }
-            // If not status, query, or condition, and to_route is identified, it's unknown
-            // This case should ideally not be reached if all parts are well-defined
-            // but serves as a fallback.
-            // if (part_type == NR_REDIRECT_PART_UNKNOWN) {
-            //     part_type = NR_REDIRECT_PART_UNKNOWN;
-            // }
+            // 3. If none of the above, it's an unknown part
+            else {
+                part_type = NR_REDIRECT_PART_UNKNOWN;
+            }
         }
     }
 
@@ -125,7 +136,8 @@ void nr_process_redirect_rule(const char *rule_line, size_t rule_line_len, nr_re
         .user_data = user_data,
         .token_count = 0,
         .to_route_identified = false,
-        .status_identified = false
+        .status_identified = false,
+        .rule_ptr = (redirect_rule_t *)user_data // Pass the rule pointer
     };
 
     nr_string_split(mutable_rule_line, trimmed_len, " ", internal_redirect_split_callback, &context);
@@ -168,7 +180,14 @@ static void nr_redirect_rule_parser_callback(
             break;
         case NR_REDIRECT_PART_STATUS:
             // Convert token to integer status code
-            rule->status_code = (uint16_t)atoi(token);
+            long status_long = strtol(token, NULL, 10);
+            // Check for valid HTTP status codes (200, 301, 302, 404)
+            if (status_long >= 100 && status_long <= 1000) {
+                rule->status_code = (uint16_t)status_long;
+            } else {
+                rule->status_code = 0; // Default to 0 if invalid, but mark as error
+                rule->parsing_error = true;
+            }
             break;
         case NR_REDIRECT_PART_FORCE:
             rule->force = true;
@@ -242,6 +261,14 @@ bool nr_parse_redirect_rule(
     nr_process_redirect_rule(rule_line, rule_line_len, nr_redirect_rule_parser_callback, rule);
 
     // A rule is considered successfully parsed if it has at least a from_route and to_route
-    // and is not an empty line or comment (which nr_process_redirect_rule already filters)
+    // A rule is considered successfully parsed if it has at least a from_route and to_route,
+    // A rule is considered successfully parsed if it has at least a from_route and to_route,
+    // is not an empty line or comment, and no parsing errors were encountered.
+    if (rule->parsing_error) {
+        // If there was a parsing error, clear the routes to ensure the rule is not partially applied.
+        rule->from_route[0] = '\0';
+        rule->to_route[0] = '\0';
+        return false;
+    }
     return (strlen(rule->from_route) > 0 && strlen(rule->to_route) > 0);
 }
